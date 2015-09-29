@@ -14,14 +14,14 @@ app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
 def authenticate():
-    return redirect("/main")
+    return render_template("index.html")
 
 @app.route('/main')
 def mainView():
-    # if("access_token" in session):
-    return render_template('main.html')
-    # else:
-        # return redirect("/")
+    if("access_token" in session):
+        return render_template('main.html')
+    else:
+        return redirect("/")
 
 @app.route('/upload',methods=['POST'])
 def spliceImage():
