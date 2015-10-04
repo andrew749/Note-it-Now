@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.insert(1, os.path.join(os.path.abspath("bin/lib/python2.7/site-packages")))
 from flask import Flask,jsonify, Response, session, request, redirect, render_template
 import flask
 import requests
