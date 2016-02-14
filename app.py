@@ -1,16 +1,56 @@
 import sys
 import os
 sys.path.insert(1, os.path.join(os.path.abspath("bin/lib/python2.7/site-packages")))
-from flask import Flask,jsonify, Response, session, request, redirect, render_template
+from flask import Flask, url_for, jsonify, Response, session, request, redirect, render_template
 import flask
 import json
 import base64
 from base64 import decodestring
 import uuid
+from flask_oauthlib.client import OAuth
+import credentials
 
 from ocr import *
 
 app = Flask(__name__, static_url_path='/static')
+
+app.config['GOOGLE_ID'] = credentials.client_id
+app.config['GOOGLE_SECRET'] = credentials.client_secret
+app.secret_key = "dev"
+
+oauth = OAuth(app)
+
+google = oauth.remote_app(
+    'google',
+    consumer_key=app.config.get('GOOGLE_ID'),
+    consumer_secret=app.config.get('GOOGLE_SECRET'),
+    request_token_params={'scope':'email'},
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
+
+@google.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
+
+@app.route('/login')
+def login():
+    return google.authorize(callback=url_for('authorized', _external=True))
+
+@app.route('/login/authorized')
+def authorized():
+    resp = google.authorized_response()
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    session['google_token'] = (resp['access_token'], '')
+    me = google.get('userinfo')
+    return jsonify({"data": me.data})
 
 @app.route('/')
 def authenticate():
@@ -18,7 +58,7 @@ def authenticate():
 
 @app.route('/main')
 def mainView():
-    if("access_token" in session):
+    if("google_token" in session):
         return render_template('main.html')
     else:
         return redirect("/")
@@ -46,6 +86,11 @@ def get64String(filename):
        encoded_string = base64.b64encode(image_file.read())
     return encoded_string
 
+@app.route("/logout")
+def logout():
+    session.pop('google_token', None)
+    return redirect(url_for('index'))
+
 @app.route('/files', methods=['POST'])
 def filesView():
     if("access_token" in session):
@@ -53,4 +98,4 @@ def filesView():
 
 #run the server
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

@@ -5,7 +5,6 @@ var buttonOptions = {
     multiselect: true,
     extensions: ['.jpg', '.png']
 };
-var button = Dropbox.createChooseButton(buttonOptions);
 $("#container").append(button);
 
 function onFiles(files) {
