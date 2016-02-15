@@ -64,18 +64,18 @@ def mainView():
         return redirect("/")
 
 #endpoint to accept image upload
-@app.route('/upload',methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def spliceImage():
-    if request.method =='POST':
+    if request.method == 'POST':
         data = request.form['image']
         tempFileName = "static/temp/"+str(uuid.uuid4())
         decode64String(tempFileName,data);
-        images=segmenter.getImages(tempFileName)
+        images = segmenter.getImages(tempFileName)
         return json.dumps(images)
     return "fail"
 
 #helper function to decode the image from the import client
-def decode64String(filename,imagestr):
+def decode64String(filename, imagestr):
     with open(filename,"wb") as f:
         f.write(decodestring(imagestr))
     return filename

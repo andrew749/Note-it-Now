@@ -1,18 +1,20 @@
-from blobdetection import Landmark
 import blobdetection
 import cropmarkup
 import cropsection
-import pdb
-def getImages(filename):
-    imagePath = filename
+
+import cv2
+def getImages(imagePath):
+    """
+    Args:
+        filename: the path to the imge file to segment
+
+    Returns:
+        Returns the sections filenames that are the results.
+    """
+
+    # Cut out the markup area
     sidePath = cropmarkup.getMarkupTab(imagePath)
-    landmarks = blobdetection.getLandmarks(sidePath)
-    landmarks.sort(key=lambda x: x.point.pt[1])
-    imageArray = []
-    for x in range(0, len(landmarks)):
-        # print x, len(landmarks)
-        if (x+1 >= len(landmarks)):
-            imageArray.append(cropsection.getSection(landmarks[x].point, 0, imagePath))
-        else:
-            imageArray.append(cropsection.getSection(landmarks[x].point, landmarks[x+1].point, imagePath))
-    return imageArray
+
+    if (sidePath == None):
+        raise Exception("Can't do it")
+
