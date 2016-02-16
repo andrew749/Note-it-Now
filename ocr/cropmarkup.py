@@ -1,50 +1,39 @@
-from PIL import Image
-import uuid
+import cv2
+import numpy as np
 """
 beginning and end are keypoints and imagePath is the name/path of the image
 For easy processing of sidebar
 """
-def getMarkupTab(imagePath):
+def getMarkupTab(image):
     #fallback margin size approximation so we can exit
-    marginSize = None
-
-    original = Image.open(imagePath)
-    width,height = original.size
-
-    #initial scanning parameters
     left = 0
-    top = 5
+    top  = 0
 
-    rgb  =  original.convert('RGB')
+    width, height = image.shape[:2]
 
-    # restrict scanning to a third of a page
-    for x in range(0,width/3):
-        # Check individual pixel values
-        r,g,b = rgb.getpixel((x,0))
-        # print ("red:{red} green:{green} blue:{blue}".format(red=r,green=g,blue=b))
-        if (g + b < 400):
-            #check for a high red value
-            marginSize = x
-
-    # Want to escape if we couldn't find a margin.
-    if marginSize is None:
-        return None
-
-    print marginSize
-    right = marginSize
-
-    #cut out the entire margin
     bottom = height
 
-    # Crop the image for later processing
-    cropped_example = original.crop((left,
-                                     top,
-                                     right,
-                                     bottom
-                                     ))
-    tempFileName = "static/temp/"+str(uuid.uuid4()) +".jpg"
-    cropped_example.save(tempFileName)
+    print "{width} x {height}".format(width=width, height=height)
 
-    # Test code to show the cropped image
-    cropped_example.show()
-    return tempFileName
+    #scan left to right and try to find the red value
+    smallestmargin = 0
+    for x in range(0, width):
+        for y in range(0, height):
+
+            # Check individual pixel values
+            pixel = image[y,x]
+
+            b = pixel[0]
+            g = pixel[1]
+            r = pixel[2]
+
+            temp_gb = np.uint16(g)+np.uint16(b)
+            if r > 230 and temp_gb < 320:
+                smallestmargin = x
+                # check for a high red value
+                return image[top:bottom, left:x]
+
+    return None
+
+
+
