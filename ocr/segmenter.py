@@ -1,7 +1,7 @@
 import blobdetection
 import cropmarkup
 import cropsection
-
+import math
 import cv2
 
 import uuid
@@ -39,6 +39,13 @@ def getImages(imagePath):
     shapes.sort(key=lambda x: x.origin[1])
     imageArray = []
 
+    print ("before")
+    print shapes
+    merge_close_neighbors(shapes)
+    print ("after")
+    print (shapes)
+
+
     # For each landmark, cut a section from either the top of the page or from landmark to landmark
     for x in range(0, len(shapes)):
         tempImage = None
@@ -50,3 +57,10 @@ def getImages(imagePath):
         imageArray.append(tempPath)
         cv2.imwrite(tempPath, tempImage)
     return imageArray
+
+def merge_close_neighbors(data):
+    i = 0
+    while i < len(data) - 1:
+        while i + 1 < len(data) and  abs(data[i+1].origin[1] - data[i].origin[1]) < 20:
+            del (data[i+1])
+        i += 1
