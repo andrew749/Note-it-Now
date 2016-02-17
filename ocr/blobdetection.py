@@ -6,7 +6,7 @@ This class is used to find the keypoints on an image and return them.
 """
 #A type for shapes
 class Shapes:
-    TRIANGLE, SQUARE, PENTAGON, HEXAGON = range(3, 7)
+    TRIANGLE, SQUARE, CUSTOM = range(3, 6)
 
 class Shape:
     type = None
@@ -23,28 +23,27 @@ def getShapeType(numberSides):
         return Shapes.TRIANGLE
     elif (len(numberSides) == 4):
         return Shapes.SQUARE
-    elif (len(numberSides) == 5):
-        return Shapes.PENTAGON
-    elif (len(numberSides) == 6):
-        return Shapes.HEXAGON
     else:
-        return None
+        return Shapes.CUSTOM
 
 def findShapes(tempimage):
     grayscale = cv2.cvtColor(tempimage, cv2.COLOR_BGR2GRAY)
-    shapeMask = cv2.inRange(grayscale, 0, 30)
+    _, grayscale = cv2.threshold(grayscale, 60, 255, cv2.THRESH_TOZERO)
+    cv2.imwrite('test.jpg', grayscale)
+    shapeMask = cv2.inRange(grayscale, 0, 60)
     (cnts, _) =  cv2.findContours(shapeMask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     shapeArray = []
     for c in cnts:
         #approximate the shape
-        result = cv2.approxPolyDP(c, 1, True)
+        result = cv2.approxPolyDP(curve=c, epsilon=cv2.arcLength(c, True) * 0.01, closed=True)
         #find moments for center calculation
         M = cv2.moments(result)
         if (M['m00'] != 0):
             cx = int(M['m10']/M['m00'])
             cy = int(M['m01']/M['m00'])
             type = getShapeType(result)
+            print type
             if type is not None:
                 shapeArray.append(Shape((cx,cy),type))
     def generateAndDrawKeypoints(image, data):

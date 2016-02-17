@@ -9,7 +9,7 @@ def getMarkupTab(image):
     left = 0
     top  = 0
 
-    width, height = image.shape[:2]
+    height,width = image.shape[:2]
 
     bottom = height
 
@@ -17,8 +17,8 @@ def getMarkupTab(image):
 
     #scan left to right and try to find the red value
     smallestmargin = 0
-    for x in range(0, width):
-        for y in range(0, height):
+    for x in xrange(width):
+        for y in xrange(height):
 
             # Check individual pixel values
             pixel = image[y,x]
