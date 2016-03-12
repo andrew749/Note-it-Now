@@ -1,11 +1,9 @@
 import sys
 import os
-sys.path.insert(1, os.path.join(os.path.abspath("bin/lib/python2.7/site-packages")))
 from flask import Flask, url_for, jsonify, Response, session, request, redirect, render_template
 import flask
 import json
 import base64
-from base64 import decodestring
 import uuid
 from flask_oauthlib.client import OAuth
 import credentials
@@ -50,14 +48,15 @@ def authorized():
         )
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    return jsonify({"data": me.data})
+    # return jsonify({"data": me.data})
+    return redirect(url_for('main'))
 
 @app.route('/')
 def authenticate():
     return render_template("index.html")
 
 @app.route('/main')
-def mainView():
+def main():
     if("google_token" in session):
         return render_template('main.html')
     else:
@@ -77,7 +76,7 @@ def spliceImage():
 #helper function to decode the image from the import client
 def decode64String(filename, imagestr):
     with open(filename,"wb") as f:
-        f.write(decodestring(imagestr))
+        f.write(base64.b64decode(imagestr))
     return filename
 
 #helper function to encode to 64bit to send to a client

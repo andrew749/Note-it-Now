@@ -53,5 +53,6 @@ def findShapes(tempimage):
 
     generateAndDrawKeypoints(tempimage, shapeArray)
     return shapeArray
+
 def getShapes(image):
     return findShapes(image)

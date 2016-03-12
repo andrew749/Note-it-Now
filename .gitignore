@@ -6,3 +6,4 @@ lib
 *.pyc
 static/temp
 credentials.py
+pip-selfcheck.json
