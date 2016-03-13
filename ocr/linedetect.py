@@ -25,13 +25,14 @@ def removeBackgroundLines(image):
 
 
 def getSentences(image):
+    """
+    Find the sentences in an image and return the rects for each one
+    """
+
     #load in the image
     cleanedImage = removeBackgroundLines(image)
-    """
-    Get a better bounding box so we can cut out text
-    """
-    # rgb_masked_image = cv2.cvtColor(res, cv2.COLOR_HSV2RGB)
-    # gray_masked_image = cv2.cvtColor(rgb_masked_image, cv2.COLOR_RGB2GRAY)
+    rgb_masked_image = cv2.cvtColor(cleanedImage, cv2.COLOR_HSV2RGB)
+    gray_masked_image = cv2.cvtColor(rgb_masked_image, cv2.COLOR_RGB2GRAY)
 
     #kernel for image operations on a long block of text
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (50,1))
@@ -39,27 +40,31 @@ def getSentences(image):
     # Filter out some noise
     closing = cv2.morphologyEx(cleanedImage, cv2.MORPH_CLOSE, kernel)
 
-    showImage(closing)
+    # showImage(closing)
     closing_rgb = cv2.cvtColor(closing,  cv2.COLOR_HSV2RGB)
     closing_gray = cv2.cvtColor(closing_rgb, cv2.COLOR_RGB2GRAY)
 
-    showImage(closing_gray)
+    # showImage(closing_gray)
 
     vertical_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (4,4))
     filter_noise = cv2.morphologyEx(closing_gray, cv2.MORPH_OPEN, vertical_kernel)
-    showImage(filter_noise)
+    # showImage(filter_noise)
 
-
-    # one_more_filter = cv2.morphologyEx(filter_noise, cv2.MORPH_CLOSE, kernel)
     one_more_filter = cv2.blur(filter_noise, (40,5))
-    # showImage(one_more_filter)
 
     contours, _ = cv2.findContours(one_more_filter, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    im_example = img.copy()
+    im_example = image.copy()
+    bounding_rects = []
     for contour in contours:
-        x,y,w,h = cv2.boundingRect(contour)
+        tempRect = cv2.boundingRect(contour)
+        bounding_rects.append(tempRect)
+        x,y,w,h = tempRect
         cv2.rectangle(im_example, (x,y), (x+w, y+h), (0,0, 255), 2)
+        cv2.imwrite('sliceslice.jpg', gray_masked_image[y:y+h, x:x+w])
 
     showImage(im_example)
+    return bounding_rects
 
+image = cv2.imread('slice.jpg')
+getSentences(image)

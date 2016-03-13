@@ -19,7 +19,6 @@
   background-color:#656F7A;
   height:100%;
   width: auto;
-  /*width: calc(100% - 300px);*/
   overflow-y: scroll;
   /*overflow-y: hidden;*/
 }
