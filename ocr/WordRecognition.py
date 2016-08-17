@@ -1,7 +1,9 @@
 import pytesseract
 from PIL import Image
 from PIL import ImageFilter
-image = Image.open('sliceslice.jpg')
-image.filter(ImageFilter.SHARPEN)
-image.show()
-print(pytesseract.image_to_string(image))
+
+def get_string_from_file(path):
+    image = Image.open(path)
+    image.filter(ImageFilter.SHARPEN)
+    # image.show()
+    return pytesseract.image_to_string()

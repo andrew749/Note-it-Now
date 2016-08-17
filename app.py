@@ -73,6 +73,16 @@ def spliceImage():
         return json.dumps(images)
     return "fail"
 
+@app.route("/logout")
+def logout():
+    session.pop('google_token', None)
+    return redirect(url_for('index'))
+
+@app.route('/files', methods=['POST'])
+def filesView():
+    if("access_token" in session):
+        return flask.jsonify(**{ "didstuff": True })
+
 #helper function to decode the image from the import client
 def decode64String(filename, imagestr):
     with open(filename,"wb") as f:
@@ -84,16 +94,6 @@ def get64String(filename):
     with open(filename, "rb") as image_file:
        encoded_string = base64.b64encode(image_file.read())
     return encoded_string
-
-@app.route("/logout")
-def logout():
-    session.pop('google_token', None)
-    return redirect(url_for('index'))
-
-@app.route('/files', methods=['POST'])
-def filesView():
-    if("access_token" in session):
-        return flask.jsonify(**{ "didstuff": True })
 
 #run the server
 if __name__ == "__main__":
