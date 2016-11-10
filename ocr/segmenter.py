@@ -21,6 +21,7 @@ def getImages(imagePath):
 
     print(im[5,:,2])
 
+    cv2.imshow('nothing', im)
     # Requires that red is present to find appropriate point
     markupImage = cropmarkup.getMarkupTab(im)
 
@@ -35,16 +36,11 @@ def getImages(imagePath):
     if (shapes == None or len(shapes) == 0 ):
         raise Exception("Can't find any shapes.")
 
-    # Sort them by the ones closest to the top
+    # Sort images by the ones closest to the top
     shapes.sort(key=lambda x: x.origin[1])
     imageArray = []
 
-    print ("before")
-    print shapes
     merge_close_neighbors(shapes)
-    print ("after")
-    print (shapes)
-
 
     # For each landmark, cut a section from either the top of the page or from landmark to landmark
     for x in range(0, len(shapes)):
@@ -59,6 +55,9 @@ def getImages(imagePath):
     return imageArray
 
 def merge_close_neighbors(data):
+    """
+    If we find shapes that are extermely close, may potentially be an error so merge them together
+    """
     i = 0
     while i < len(data) - 1:
         while i + 1 < len(data) and  abs(data[i+1].origin[1] - data[i].origin[1]) < 20:

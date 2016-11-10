@@ -26,6 +26,6 @@ def getMarkupTab(image):
             temp_gb = np.uint16(g) + np.uint16(b)
 
             # Checking the green blue and red threshold values
-            if r > 230 and temp_gb < 320:
+            if r > 200 and temp_gb < 320:
                 return image[ top : height, left : x]
     return None

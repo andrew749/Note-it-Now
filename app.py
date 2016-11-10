@@ -48,7 +48,6 @@ def authorized():
         )
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    # return jsonify({"data": me.data})
     return redirect(url_for('main'))
 
 @app.route('/')
@@ -71,7 +70,7 @@ def spliceImage():
         decode64String(tempFileName,data);
         images = segmenter.getImages(tempFileName)
         return json.dumps(images)
-    return "fail"
+    abort(404)
 
 @app.route("/logout")
 def logout():

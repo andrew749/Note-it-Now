@@ -3,12 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def showImage(image, name="Test image"):
+    """
+    Helper to show an image given a path
+    Used for debugging.
+    """
     cv2.imshow(name, image)
     cv2.waitKey()
 
 def removeBackgroundLines(image):
     """
-    remove the blue lines
+    Remove the blue lines from a sheet of paper
     """
     # load the image and hue and saturation
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -28,7 +32,6 @@ def getSentences(image):
     """
     Find the sentences in an image and return the rects for each one
     """
-
     #load in the image
     cleanedImage = removeBackgroundLines(image)
     rgb_masked_image = cv2.cvtColor(cleanedImage, cv2.COLOR_HSV2RGB)
@@ -63,7 +66,7 @@ def getSentences(image):
         cv2.rectangle(im_example, (x,y), (x+w, y+h), (0,0, 255), 2)
         cv2.imwrite('sliceslice.jpg', gray_masked_image[y:y+h, x:x+w])
 
-    showImage(im_example)
+    # showImage(im_example)
     return bounding_rects
 
 image = cv2.imread('slice.jpg')
