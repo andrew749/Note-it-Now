@@ -7,3 +7,4 @@ lib
 static/temp
 credentials.py
 pip-selfcheck.json
+training/
