@@ -1,58 +1,67 @@
-<head>
-    <title>Note-it-Now</title>
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <!--<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-    <script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-    <script>
-        $(function() {
-            $( "#sortable" ).sortable({
-                revert: true
-            });
-            $( "#draggable" ).draggable({
-                connectToSortable: "#sortable",
-                helper: "clone",
-                revert: "invalid"
-            });
-            $( "ul, li" ).disableSelection();
-        });
-    </script>
-</head>
+{% extends "base.html" %}
 
+{% block title%}
+<title>Note-It</title>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
+<script>
+    $(function() {
+
+        $( "#sortable" ).sortable({
+            revert: true
+        });
+
+        $( "#draggable" ).draggable({
+            connectToSortable: "#sortable",
+            helper: "clone",
+            revert: "invalid"
+        });
+
+        $( "ul, li" ).disableSelection();
+    });
+</script>
+
+{% block body %}
 <div class="main">
+
     <div class="nav-side-menu" style="z-index: 100;">
         <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
         <div class="menu-list">
-            <div class="welcome">Note-it-Now</div>
+            <div class="welcome cursive">Note-It</div>
         </div>
     </div>
+
     <div class="hello" >
+        <input type="search">
+        <h3 class="notebook-name">Notebook Name</h3>
+        <hr />
         <ul id="sortable" class="sortable"></ul>
+        <a class="fab btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
     </div>
 
     <div class="popup-create popup-hidden">
         <form class="upload" action="">
             <input id="uploadform" type="file" multiple class="multi with-preview accept-png|jpg"/>
-            <input id="submitButton" type="button" value="Upload" name="Submit"/>
+            <input id="submitButton" class="btn btn-primary" type="button" value="Upload" name="Submit"/>
         </form>
     </div>
-    <div id="centered-spinner">
 
+    <div id="centered-spinner">
     </div>
-    <div class="fab">+</div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script src="{{ url_for('static', filename='js/backbone-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/views/notes.js') }}"></script>
     <script src="{{ url_for('static', filename='js/router.js') }}"></script>
-
     <script src="{{ url_for('static', filename='js/handlebars.js') }}"></script>
-
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript" language="javascript"></script>-->
-    <!--<script src="//github.com/fyneworks/multifile/blob/master/jQuery.MultiFile.min.js" type="text/javascript" language="javascript"></script>-->
+
+</div>
+{% endblock %}

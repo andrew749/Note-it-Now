@@ -6,6 +6,8 @@ import json
 import base64
 import uuid
 from flask_oauthlib.client import OAuth
+
+# Credentials file for google
 import credentials
 
 from ocr import *
